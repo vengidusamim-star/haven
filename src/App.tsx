@@ -12,6 +12,20 @@ import {
 } from './types/browser.ts';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
+async function parseApiResponse(response: Response): Promise<any> {
+  const body = await response.text();
+  try {
+    return JSON.parse(body);
+  } catch {
+    const contentType = response.headers.get('content-type') || 'unknown content type';
+    throw new Error(
+      response.ok
+        ? `Playwright service returned an invalid response (${contentType})`
+        : `Playwright service returned ${response.status} instead of JSON`
+    );
+  }
+}
+
 export default function App() {
   const [currentUrl, setCurrentUrl] = useState<string>('https://news.ycombinator.com');
   const [navigationData, setNavigationData] = useState<PlaywrightNavigationResult | null>(null);
@@ -64,7 +78,7 @@ export default function App() {
           }),
         });
 
-        const data = await response.json();
+        const data = await parseApiResponse(response);
 
         if (response.ok && data.success) {
           setNavigationData(data);
@@ -96,7 +110,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'click', x, y }),
       });
-      const result = await response.json();
+      const result = await parseApiResponse(response);
       if (result.success) {
         setLastActionResult({ type: 'success', message: `Clicked coordinate (${x}, ${y})` });
         if (result.screenshot && navigationData) {
@@ -130,7 +144,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(actionData),
       });
-      const result = await response.json();
+      const result = await parseApiResponse(response);
       if (result.success) {
         setLastActionResult({ type: 'success', message: result.actionResult || 'Action completed' });
         if (result.screenshot && navigationData) {
@@ -180,7 +194,7 @@ export default function App() {
           body: JSON.stringify({ deltaY, direction, targetY }),
         });
 
-        const result = await response.json();
+        const result = await parseApiResponse(response);
         if (result.success && result.screenshot) {
           setNavigationData((prev) =>
             prev
