@@ -1,0 +1,8 @@
+{
+  "name": "Remix Playwright Browser Studio",
+  "description": "Interactive Playwright-powered browser explorer, live URL renderer, DOM inspector, network monitor, and test script generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
