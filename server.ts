@@ -59,6 +59,10 @@ function getChromiumExecutablePath(): string | undefined {
   } catch { /* ignore */ }
 
   const candidates = [
+    // Playwright's default cache is used in local development and v0 previews.
+    chromium.executablePath(),
+    path.join(process.env.PLAYWRIGHT_BROWSERS_PATH || path.join(process.env.HOME || '', '.cache', 'ms-playwright'), 'chromium_headless_shell-1254', 'chrome-headless-shell-linux64', 'chrome-headless-shell'),
+    path.join(process.env.PLAYWRIGHT_BROWSERS_PATH || path.join(process.env.HOME || '', '.cache', 'ms-playwright'), 'chromium-1254', 'chrome-linux', 'chrome'),
     '/ms-playwright/chromium_headless_shell-1247/chrome-headless-shell-linux64/chrome-headless-shell',
     '/ms-playwright/chromium_headless_shell-1254/chrome-headless-shell-linux64/chrome-headless-shell',
     '/ms-playwright/chrome-headless-shell-linux64/chrome-headless-shell',
